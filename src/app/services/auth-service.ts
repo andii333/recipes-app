@@ -16,11 +16,15 @@ export class AuthService {
     });
   }
 
-  getSession() {
+  logout(): void {
+    localStorage.removeItem('session');
+  }
+
+  getSession(): IAuthResponse | null {
     const session = localStorage.getItem('session');
     return session ? JSON.parse(session) : null;
   }
-  setSession(session: IAuthResponse) {
-    return localStorage.setItem('session', JSON.stringify(session));
+  setSession(session: IAuthResponse): void {
+    localStorage.setItem('session', JSON.stringify(session));
   }
 }

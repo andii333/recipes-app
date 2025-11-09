@@ -35,7 +35,7 @@ export class Login {
     }
 
     this.authService
-      .login('emilys', 'emilyspass')
+      .login(this.username, this.password)
       .pipe(catchError((err) => this.warningService.handleError(err)))
       .subscribe((session) => {
         this.authService.setSession(session);

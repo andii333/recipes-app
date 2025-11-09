@@ -1,0 +1,9 @@
+@if (warningErrorText()) {
+<div class="warning-small warning-small_error">
+  <p class="warning-small__text">{{ warningErrorText() }}</p>
+</div>
+} @if (warningSuccessText()) {
+<div class="warning-small warning-small_success">
+  <p class="warning-small__text">{{ warningSuccessText() }}</p>
+</div>
+}

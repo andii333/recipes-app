@@ -1,1 +1,23 @@
-<p>recipes works!</p>
+<div class="recipes">
+  <header>
+    <div class="recipes__logo-box">
+      <picture>
+        <img
+          class="recipes__logo"
+          src="icons/recipe-manager.svg"
+          alt="recipe icon"
+        />
+      </picture>
+      <span class="recipes__title">Recipe Manager</span>
+    </div>
+    <p-button
+      class="recipes__btn"
+      type="button"
+      label="Logout"
+      icon="pi pi-sign-out"
+      severity="secondary"
+      (click)="logout()"
+    ></p-button>
+  </header>
+  <router-outlet></router-outlet>
+</div>

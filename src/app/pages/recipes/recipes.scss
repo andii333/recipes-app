@@ -1,0 +1,35 @@
+@use "mixins" as *;
+.recipes {
+  padding: 0 70px;
+  background-color: white;
+  @include border();
+  border-radius: 0;
+  header {
+    padding: 16px 32px;
+    @include fr();
+    justify-content: space-between;
+    position: sticky;
+  }
+  picture {
+    width: 40px;
+    height: 40px;
+    background-color: var(--orange);
+    border-radius: 0.625rem;
+    @include frc();
+  }
+  &__logo-box {
+    @include fr();
+    gap: 12px;
+  }
+
+  &__logo {
+    width: 24px;
+    height: 24px;
+  }
+
+  &__title {
+  }
+
+  &__btn {
+  }
+}
