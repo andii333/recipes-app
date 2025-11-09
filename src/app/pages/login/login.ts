@@ -37,8 +37,8 @@ export class Login {
     this.authService
       .login('emilys', 'emilyspass')
       .pipe(catchError((err) => this.warningService.handleError(err)))
-      .subscribe((res) => {
-        this.authService.setToken(res.token);
+      .subscribe((session) => {
+        this.authService.setSession(session);
         this.warningService.showSuccessWarning('Successfully logged in');
         this.Router.navigate(['/recipes']);
       });

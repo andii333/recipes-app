@@ -1,6 +1,6 @@
 import { Injectable, signal } from '@angular/core';
 import { Observable, throwError } from 'rxjs';
-import { IError } from '../models/interfaces/error';
+import { IError } from '../models/interfaces/error.interface';
 
 @Injectable({ providedIn: 'root' })
 export class WarningService {

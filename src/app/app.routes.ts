@@ -19,4 +19,8 @@ export const routes: Routes = [
       import('./pages/recipes/recipes').then((m) => m.Recipes),
     canActivate: [authGuard],
   },
+  {
+    path: '**',
+    redirectTo: 'login',
+  },
 ];
