@@ -11,7 +11,7 @@
     />
     <p-select
       [options]="recipeTagOptions"
-      [(ngModel)]="selectedRecipe"
+      [(ngModel)]="selectedTag"
       placeholder="All Tags"
       class="container__search-select"
       (onChange)="onTagChange($event.value)"
@@ -22,7 +22,7 @@
   </p>
   <div class="container__table table">
     <p-table
-      [value]="recipes"
+      [value]="recipesSignal()"
       [paginator]="true"
       [rows]="pageSize"
       [rowsPerPageOptions]="[5, 10, 20]"
@@ -95,6 +95,7 @@
               tooltip="Delete"
               severity="danger"
               variant="text"
+              (onClick)="onDelete(recipe)"
             ></p-button>
           </td>
         </tr>

@@ -58,6 +58,7 @@ export class RecipesService {
 
   removeRecipeFromSignal(recipeId: number): void {
     this._recipes.update((recipes) => recipes.filter((r) => r.id !== recipeId));
+    this._recipesTotalSignal.update((total) => total - 1);
   }
 
   getRecipeTags(): void {
