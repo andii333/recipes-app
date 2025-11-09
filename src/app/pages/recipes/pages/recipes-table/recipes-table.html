@@ -1,1 +1,104 @@
-<p>recipes-table works!</p>
+<div class="container">
+  <h1 class="container__title">Recipes</h1>
+  <p class="container__subtitle">Browse and manage your recipe collection</p>
+  <div class="container__search-box">
+    <input
+      pInputText
+      [formControl]="searchControl"
+      class="container__search-input"
+      type="text"
+      placeholder="Search recipes by name or cuisine..."
+    />
+    <p-select
+      [options]="recipeTagOptions"
+      [(ngModel)]="selectedRecipe"
+      placeholder="All Tags"
+      class="container__search-select"
+      (onChange)="onTagChange($event.value)"
+    />
+  </div>
+  <p class="container__amount">
+    Showing {{ recipesSignal().length }} of {{ recipesTotalSignal() }} recipes
+  </p>
+  <div class="container__table table">
+    <p-table
+      [value]="recipes"
+      [paginator]="true"
+      [rows]="pageSize"
+      [rowsPerPageOptions]="[5, 10, 20]"
+      [totalRecords]="recipesTotalSignal()"
+      (onPage)="onPageChange($event)"
+      [lazy]="true"
+    >
+      <ng-template pTemplate="header">
+        <tr>
+          <th>Image</th>
+          <th>Recipe Name</th>
+          <th>Cuisine</th>
+          <th>Difficulty</th>
+          <th>Calories</th>
+          <th>Tags</th>
+          <th>Actions</th>
+        </tr>
+      </ng-template>
+
+      <ng-template pTemplate="body" let-recipe>
+        <tr>
+          <td>
+            <img
+              class="table__image"
+              [src]="recipe.image"
+              alt="{{ recipe.name }}"
+            />
+          </td>
+          <td>{{ recipe.name }}</td>
+          <td>{{ recipe.cuisine }}</td>
+          <td>
+            <span
+              class="table__dificulty"
+              [ngClass]="{
+                'bg-green': recipe.difficulty === 'Easy',
+                'bg-yellow': recipe.difficulty === 'Medium',
+                'bg-red': recipe.difficulty === 'Hard'
+              }"
+            >
+              {{ recipe.difficulty }}
+            </span>
+          </td>
+          <td class="table__calories">{{ recipe.caloriesPerServing }} kcal</td>
+          <td>
+            @for(tag of recipe.tags; track $index){
+            <p-chip [label]="tag" class="table__tag" />
+            }
+          </td>
+          <td>
+            <p-button
+              pButton
+              icon="pi pi-eye"
+              class="table__btn"
+              tooltip="View Recipe"
+              severity="secondary"
+              variant="text"
+            ></p-button>
+            <p-button
+              pButton
+              icon="pi pi-pencil"
+              class="table__btn"
+              tooltip="Edit"
+              severity="secondary"
+              variant="text"
+            ></p-button>
+            <p-button
+              pButton
+              icon="pi pi-trash"
+              class="table__btn"
+              tooltip="Delete"
+              severity="danger"
+              variant="text"
+            ></p-button>
+          </td>
+        </tr>
+      </ng-template>
+    </p-table>
+  </div>
+</div>

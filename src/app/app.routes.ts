@@ -18,6 +18,22 @@ export const routes: Routes = [
     loadComponent: () =>
       import('./pages/recipes/recipes').then((m) => m.Recipes),
     canActivate: [authGuard],
+    children: [
+      {
+        path: '',
+        loadComponent: () =>
+          import('./pages/recipes/pages/recipes-table/recipes-table').then(
+            (m) => m.RecipesTable
+          ),
+      },
+      {
+        path: ':id',
+        loadComponent: () =>
+          import('./pages/recipes/pages/recipe-detailed/recipe-detailed').then(
+            (m) => m.RecipeDetailed
+          ),
+      },
+    ],
   },
   {
     path: '**',

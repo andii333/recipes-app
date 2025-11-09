@@ -1,11 +1,9 @@
 @use "mixins" as *;
 .recipes {
-  padding: 0 70px;
-  background-color: white;
-  @include border();
-  border-radius: 0;
   header {
-    padding: 16px 32px;
+    background-color: white;
+    @include border-b();
+    padding: 16px 102px;
     @include fr();
     justify-content: space-between;
     position: sticky;
