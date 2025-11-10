@@ -1,59 +1,91 @@
-# RecipesApp
+# Project Notes
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 20.0.5.
+This API does not allow performing a complex query with multiple filters, so I used two types of requests to fetch recipes:
+1. Fetching all recipes in the default order with a search-by-letters function.
+2. Fetching recipes by a specific tag.
 
-## Development server
+Therefore, when searching by tag, the search string by letters is cleared, and when searching by letters, the selected tag is reset.
+Since there is pagination, any changes made when deleting or editing a recipe are temporary and reset upon a new fetch of recipes.
+Additionally, I did not consider it necessary to store the loaded recipes, because doing so would disrupt the order of recipes when changing the tag or entering a new search string.
 
-To start a local development server, run:
+# Recipes App
 
-```bash
+This is a simple Angular application for managing and browsing recipes.
+
+## Prerequisites
+
+Before you begin, make sure you have the following installed:
+
+- Node.js (v18 or higher recommended)
+- npm (comes with Node.js)
+- Angular CLI (v16 or higher recommended)
+
+To install Angular CLI globally, run:
+
+npm install -g @angular/cli
+
+---
+
+## Installation
+
+1. Clone the repository:
+
+git clone [https://github.com/yourusername/recipes-app.git](https://github.com/andii333/recipes-app/edit/main)
+cd recipes-app
+
+2. Install dependencies:
+
+npm install
+
+---
+
+## Running the Application
+
+To start the development server:
+
 ng serve
-```
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+The app will be available at: http://localhost:4200
 
-## Code scaffolding
+Note: The development server supports live-reloading, so any changes you make to the code will automatically refresh the app.
 
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
+---
 
-```bash
-ng generate component component-name
-```
+## Building for Production
 
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
+To build the project for production:
 
-```bash
-ng generate --help
-```
+ng build --prod
 
-## Building
+The compiled files will be in the `dist/` directory. You can then deploy them to any web server.
 
-To build the project run:
+---
 
-```bash
-ng build
-```
+## Running Unit Tests
 
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
+To run the unit tests:
 
-## Running unit tests
-
-To execute unit tests with the [Karma](https://karma-runner.github.io) test runner, use the following command:
-
-```bash
 ng test
-```
 
-## Running end-to-end tests
+This will run tests using Karma and display the results in the console and browser.
 
-For end-to-end (e2e) testing, run:
+---
 
-```bash
+## Running End-to-End (E2E) Tests
+
+To run e2e tests:
+
 ng e2e
-```
 
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
+This will execute tests using Cypress or Protractor depending on your setup.
 
-## Additional Resources
+---
 
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+## Technologies Used
+
+- Angular 20
+- TypeScript
+- PrimeNG (UI components)
+- RxJS
+- HTML/CSS/SCSS
+
