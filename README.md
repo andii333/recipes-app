@@ -30,7 +30,7 @@ npm install -g @angular/cli
 
 1. Clone the repository:
 
-git clone [https://github.com/yourusername/recipes-app.git](https://github.com/andii333/recipes-app/edit/main)
+git clone (https://github.com/andii333/recipes-app)
 cd recipes-app
 
 2. Install dependencies:
