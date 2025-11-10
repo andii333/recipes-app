@@ -8,6 +8,11 @@ Therefore, when searching by tag, the search string by letters is cleared, and w
 Since there is pagination, any changes made when deleting or editing a recipe are temporary and reset upon a new fetch of recipes.
 Additionally, I did not consider it necessary to store the loaded recipes, because doing so would disrupt the order of recipes when changing the tag or entering a new search string.
 
+# Login credentals
+
+username: emilys
+password: emilyspass
+
 # Recipes App
 
 This is a simple Angular application for managing and browsing recipes.
