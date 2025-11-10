@@ -1,0 +1,197 @@
+@if(recipeSignal()){
+<form
+  class="form"
+  [formGroup]="recipeForm"
+  autoFocus="false"
+  (ngSubmit)="saveRecipe()"
+>
+  <div class="form__row">
+    <label for="name">Recipe Name</label>
+    <input pInputText id="name" formControlName="name" />
+  </div>
+
+  <div class="form__row">
+    <label for="image">Image URL</label>
+    <input pInputText id="image" formControlName="image" />
+  </div>
+
+  <div class="form__row">
+    <label for="cuisine">Cuisine</label>
+    <input pInputText formControlName="cuisines" />
+  </div>
+
+  <div class="form__row">
+    <label for="difficulty">Difficulty</label>
+    <p-select [options]="difficulties" formControlName="difficulty"></p-select>
+  </div>
+
+  <div class="form__row">
+    <label>Prep Time (min)</label>
+    <p-inputnumber formControlName="prepTimeMinutes" [min]="0" />
+  </div>
+
+  <div class="form__row">
+    <label>Cook Time (min)</label>
+    <p-inputnumber formControlName="cookTimeMinutes" [min]="0" />
+  </div>
+
+  <div class="form__row">
+    <label>Servings</label>
+    <p-inputnumber formControlName="servings" [min]="1" />
+  </div>
+
+  <div class="form__row">
+    <label>Calories per Serving</label>
+    <p-inputnumber formControlName="caloriesPerServing" [min]="0" />
+  </div>
+
+  <div class="form__array">
+    <label>Meal Type</label>
+    <div class="form__array_row">
+      @for(type of mealType.getRawValue(); track $index){
+      <div class="form__array_item">
+        <span>{{ type }}</span>
+        <p-button
+          type="button"
+          severity="contrast"
+          variant="text"
+          size="small"
+          icon="pi pi-times"
+          (click)="removeMealType($index)"
+        ></p-button>
+      </div>
+      }
+    </div>
+
+    <div class="form__array_input-box">
+      <input
+        pInputText
+        [(ngModel)]="newMealType"
+        [ngModelOptions]="{ standalone: true }"
+        placeholder="New tag"
+      />
+      <p-button
+        type="button"
+        label="Add"
+        icon="pi pi-plus"
+        severity="contrast"
+        (click)="addMealType()"
+      ></p-button>
+    </div>
+  </div>
+
+  <div class="form__array">
+    <label>Tags</label>
+    <div class="form__array_row">
+      @for(tag of tags.getRawValue(); track $index){
+      <div class="form__array_item">
+        <span>{{ tag }}</span>
+        <p-button
+          type="button"
+          severity="contrast"
+          variant="text"
+          size="small"
+          icon="pi pi-times"
+          (click)="removeTag($index)"
+        ></p-button>
+      </div>
+      }
+    </div>
+
+    <div class="form__array_input-box">
+      <input
+        pInputText
+        [(ngModel)]="newTag"
+        [ngModelOptions]="{ standalone: true }"
+        placeholder="New tag"
+      />
+      <p-button
+        type="button"
+        label="Add"
+        icon="pi pi-plus"
+        severity="contrast"
+        (click)="addTag()"
+      ></p-button>
+    </div>
+  </div>
+
+  <div class="form__array">
+    <label>Ingredients</label>
+    <div class="form__array_column" formArrayName="ingredients">
+      @for(ingredient of ingredients.getRawValue(); track $index){
+      <div>
+        <input pInputText [formControlName]="$index" [value]="ingredient" />
+        <p-button
+          type="button"
+          severity="contrast"
+          variant="text"
+          size="small"
+          icon="pi pi-times"
+          (click)="removeIngredient($index)"
+        ></p-button>
+      </div>
+      }
+    </div>
+
+    <div class="form__array_input-box">
+      <input
+        pInputText
+        [(ngModel)]="newIngredient"
+        [ngModelOptions]="{ standalone: true }"
+        placeholder="New ingredient"
+      />
+      <p-button
+        type="button"
+        label="Add"
+        icon="pi pi-plus"
+        severity="contrast"
+        size="small"
+        (click)="addIngredient()"
+      ></p-button>
+    </div>
+  </div>
+  <div class="form__array" formArrayName="instructions">
+    <label>Instructions</label>
+    <div class="form__array_column">
+      @for(instruction of instructions.getRawValue(); track $index){
+      <div>
+        {{ $index + 1 }}.
+        <input pInputText [formControlName]="$index" [value]="instruction" />
+        <p-button
+          type="button"
+          severity="contrast"
+          variant="text"
+          size="small"
+          icon="pi pi-times"
+          (click)="removeInstruction($index)"
+        ></p-button>
+      </div>
+      }
+    </div>
+
+    <div class="form__array_input-box">
+      <input
+        pInputText
+        [(ngModel)]="newInstruction"
+        [ngModelOptions]="{ standalone: true }"
+        placeholder="New instruction"
+      />
+      <p-button
+        type="button"
+        label="Add"
+        icon="pi pi-plus"
+        severity="contrast"
+        size="small"
+        (click)="addInstruction()"
+      ></p-button>
+    </div>
+  </div>
+
+  <p-button
+    class="form__submit"
+    type="submit"
+    label="Save Changes"
+    severity="contrast"
+  ></p-button>
+</form>
+}

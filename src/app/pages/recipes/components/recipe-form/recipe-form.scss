@@ -1,0 +1,62 @@
+@use "mixins" as *;
+.form {
+  @include fc();
+  align-items: start;
+  padding: 24px;
+  gap: 16px;
+  max-width: 70vw;
+  &__row {
+    @include fr();
+  }
+  label {
+    color: var(--text-secondary);
+    width: 200px;
+  }
+  input,
+  p-inputnumber,
+  p-select {
+    width: 300px;
+  }
+  &__array {
+    @include fc();
+    align-items: center;
+    width: 100%;
+    margin: 12px 0;
+    gap: 12px;
+    &_row {
+      width: 100%;
+      @include fr();
+      flex-wrap: wrap;
+      align-items: start;
+      gap: 8px;
+    }
+    &_column {
+      width: 100%;
+      @include fc();
+      align-items: start;
+      gap: 8px;
+      input {
+        width: 500px;
+      }
+    }
+    &_item {
+      @include fr();
+      @include border();
+      padding: 0 8px;
+      gap: 4px;
+      font-size: 14px;
+    }
+    &_input-box {
+      width: 100%;
+      @include fr();
+      gap: 16px;
+      input {
+        width: 450px;
+      }
+    }
+  }
+
+  &__submit {
+    margin: auto;
+  }
+}

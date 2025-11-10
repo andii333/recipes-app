@@ -1,1 +1,122 @@
-<p>recipe-detailed works!</p>
+<div class="container">
+  <p-button
+    label="Back to Recipes"
+    icon="pi pi-arrow-left"
+    iconPos="left"
+    variant="text"
+    severity="contrast"
+    size="small"
+    (click)="backToList()"
+  />
+  @if(recipeSignal(); as recipe){
+  <div class="container__card">
+    <picture class="container__picture">
+      <img class="container__image" [src]="recipe.image" alt="picture" />
+    </picture>
+    <div class="container__card-text">
+      <div class="container__title">
+        <h1>{{ recipe.name }}</h1>
+        <div class="container__btns">
+          <p-button
+            pButton
+            icon="pi pi-pen-to-square"
+            class="container__btn"
+            label="Edit"
+            tooltip="Edit"
+            severity="secondary"
+            (click)="onEdit(recipe.id)"
+          ></p-button>
+          <p-confirmpopup />
+          <p-button
+            pButton
+            icon="pi pi-trash"
+            class="container__btn"
+            label="Delete"
+            tooltip="Delete"
+            severity="danger"
+            variant="outlined"
+            (click)="confirmDelete($event)"
+          ></p-button>
+        </div>
+      </div>
+      <p class="container__cuisine">{{ recipe.cuisine }} Cuisine</p>
+      <p class="container__tags">
+        <span
+          class="container__tags_difficulty"
+          [ngClass]="{
+            'bg-green': recipe.difficulty === 'Easy',
+            'bg-yellow': recipe.difficulty === 'Medium',
+            'bg-red': recipe.difficulty === 'Hard'
+          }"
+          >{{ recipe.difficulty }}</span
+        >
+        @for(tag of recipe.tags; track $index){
+        <span class="container__tags_tag">{{ tag }}</span>
+        }
+      </p>
+      <div class="container__indicator-box">
+        <div class="container__indicator">
+          <i class="pi pi-clock"></i>
+          <div>
+            <span>Prep Time</span>
+            <span>{{ recipe.prepTimeMinutes }} min</span>
+          </div>
+        </div>
+        <div class="container__indicator">
+          <i class="pi pi-clock"></i>
+          <div>
+            <span>Cook Time</span>
+            <span>{{ recipe.cookTimeMinutes }} min</span>
+          </div>
+        </div>
+        <div class="container__indicator">
+          <i class="pi pi-users"></i>
+          <div>
+            <span>Servings</span>
+            <span>{{ recipe.servings }}</span>
+          </div>
+        </div>
+        <div class="container__indicator">
+          <img src="icons/calories.svg" alt="calories" />
+          <div>
+            <span>Calories</span>
+            <span>{{ recipe.caloriesPerServing }} kcal</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="container__details">
+    <div class="container__ingredients">
+      <h5>Ingredients</h5>
+      <ul>
+        @for(ingredient of recipe.ingredients; track $index){
+        <li>{{ ingredient }}</li>
+        }
+      </ul>
+    </div>
+
+    <div class="container__instructions">
+      <h5>Instructions</h5>
+      <ol>
+        @for(instruction of recipe.instructions; track $index){
+        <li>{{ instruction }}</li>
+        }
+      </ol>
+    </div>
+  </div>
+  }
+</div>
+
+@if(activeRecipe){<p-dialog
+  header="Edit recipe"
+  [modal]="true"
+  [(visible)]="visibleRecipeForm"
+>
+  <app-recipe-form
+    [recipeId]="activeRecipe"
+    (closeDialog)="closeDialog()"
+  ></app-recipe-form>
+</p-dialog>
+}

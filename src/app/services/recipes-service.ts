@@ -20,6 +20,8 @@ export class RecipesService {
   recipeTagsSignal = this._tags.asReadonly();
   private _recipesTotalSignal = signal<number>(0);
   recipesTotalSignal = this._recipesTotalSignal.asReadonly();
+  private _activeRecipeSignal = signal<IRecipe | null>(null);
+  activeRecipeSignal = this._activeRecipeSignal.asReadonly();
 
   getAllRecipes(limit?: number, skip?: number, searchText?: string): void {
     let httpParams = new HttpParams();
@@ -47,7 +49,14 @@ export class RecipesService {
   }
 
   getOneRecipe(recipeId: number): Observable<IRecipe> {
-    return this.http.get<IRecipe>(' https://dummyjson.com/recipes/' + recipeId);
+    return this.http
+      .get<IRecipe>(' https://dummyjson.com/recipes/' + recipeId)
+      .pipe(
+        tap((recipe) => {
+          this._activeRecipeSignal.set(recipe);
+        }),
+        catchError((err) => this.warningService.handleError(err))
+      );
   }
 
   updateRecipeInSignal(updated: IRecipe): void {
@@ -59,6 +68,9 @@ export class RecipesService {
   removeRecipeFromSignal(recipeId: number): void {
     this._recipes.update((recipes) => recipes.filter((r) => r.id !== recipeId));
     this._recipesTotalSignal.update((total) => total - 1);
+    this.warningService.showSuccessWarning(
+      'The recipe was successfully deleted'
+    );
   }
 
   getRecipeTags(): void {
@@ -96,5 +108,13 @@ export class RecipesService {
         catchError((err) => this.warningService.handleError(err))
       )
       .subscribe();
+  }
+
+  removeActiveRecipe() {
+    this._activeRecipeSignal.set(null);
+  }
+
+  updateActiveRecipe(updated: IRecipe): void {
+    this._activeRecipeSignal.set(updated);
   }
 }

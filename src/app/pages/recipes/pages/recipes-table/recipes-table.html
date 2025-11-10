@@ -79,14 +79,16 @@
               tooltip="View Recipe"
               severity="secondary"
               variant="text"
+              (onClick)="onView(recipe)"
             ></p-button>
             <p-button
               pButton
-              icon="pi pi-pencil"
+              icon="pi pi-pen-to-square"
               class="table__btn"
               tooltip="Edit"
               severity="secondary"
               variant="text"
+              (click)="onEdit(recipe.id)"
             ></p-button>
             <p-button
               pButton
@@ -95,7 +97,7 @@
               tooltip="Delete"
               severity="danger"
               variant="text"
-              (onClick)="onDelete(recipe)"
+              (click)="confirmDelete($event, recipe.id)"
             ></p-button>
           </td>
         </tr>
@@ -103,3 +105,13 @@
     </p-table>
   </div>
 </div>
+
+<p-confirmDialog></p-confirmDialog>
+@if(activeRecipeSignal()){
+<p-dialog header="Edit recipe" [modal]="true" [(visible)]="visibleRecipeForm">
+  <app-recipe-form
+    [recipeId]="activeRecipeSignal()!"
+    (closeDialog)="closeDialog()"
+  ></app-recipe-form>
+</p-dialog>
+}

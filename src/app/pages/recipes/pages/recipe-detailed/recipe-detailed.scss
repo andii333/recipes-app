@@ -1,0 +1,164 @@
+@use "mixins" as *;
+.container {
+  @include fr();
+  padding: 32px;
+  margin: 0 14%;
+  flex-wrap: wrap;
+  gap: 25px;
+
+  &__card {
+    @include fc();
+    @include border();
+    gap: 24px;
+    border-radius: 12px;
+    background-color: white;
+    width: 100%;
+  }
+  &__card-text {
+    @include fc();
+    gap: 8px;
+    padding: 24px;
+    border-radius: 12px;
+  }
+
+  &__picture {
+    width: 100%;
+  }
+
+  &__image {
+    border-top-left-radius: 12px;
+    border-top-right-radius: 12px;
+    width: 100%;
+    height: auto;
+  }
+
+  &__title {
+    @include fr();
+    justify-content: space-between;
+    font-weight: 600;
+    h1 {
+      font-size: 24px;
+    }
+  }
+
+  &__btns {
+    @include fr();
+    gap: 5px;
+  }
+
+  &__btn {
+  }
+
+  &__cuisine {
+    color: var(--text-secondary);
+    margin-bottom: 8px;
+  }
+
+  &__tags {
+    @include fr();
+    gap: 8px;
+    margin-bottom: 16px;
+
+    span {
+      padding: 2px 8px;
+      border-radius: 6px;
+      font-size: 12px;
+      font-weight: 500;
+    }
+
+    &_tag {
+      @include border();
+    }
+
+    &_difficulty {
+    }
+  }
+
+  &__indicator-box {
+    @include fr();
+    gap: 15%;
+  }
+
+  &__indicator {
+    @include fr();
+    gap: 12px;
+
+    i {
+      font-size: 20px;
+      color: var(--text-secondary);
+    }
+
+    img {
+      filter: invert(42%) sepia(6%) saturate(210%) hue-rotate(210deg)
+        brightness(92%) contrast(85%);
+    }
+
+    div {
+      @include fc();
+      gap: 4px;
+
+      span:first-child {
+        color: var(--text-secondary);
+        font-size: 14px;
+      }
+    }
+  }
+
+  &__details {
+    @include fr();
+    width: 100%;
+    gap: 25px;
+    align-items: stretch;
+
+    div {
+      width: 100%;
+      flex: 1;
+      @include border();
+      border-radius: 12px;
+      background-color: white;
+      padding: 24px;
+    }
+    h5 {
+      font-weight: 500;
+      margin-bottom: 24px;
+    }
+    ul {
+      margin-left: 16px;
+    }
+    li {
+      line-height: 28px;
+    }
+  }
+  &__ingredients {
+    li {
+      list-style-type: disc;
+      margin-bottom: 8px;
+      &::marker {
+        color: var(--orange);
+      }
+    }
+  }
+
+  &__instructions {
+    li {
+      counter-increment: my-counter;
+      position: relative;
+      margin-bottom: 12px;
+      padding-left: 40px;
+      &::before {
+        content: counter(my-counter);
+        position: absolute;
+        font-size: 14px;
+        left: 0;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 24px;
+        height: 24px;
+        border-radius: 50%;
+        background-color: var(--orange);
+        color: white;
+        @include fcc();
+      }
+    }
+  }
+}

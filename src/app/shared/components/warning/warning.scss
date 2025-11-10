@@ -1,46 +1,13 @@
 @use "mixins" as *;
-.warning {
-  position: fixed;
-  left: 0;
-  top: 0;
-  width: 100vw;
-  height: 100vh;
-  @include fcc();
-  background-color: rgba(0, 0, 0, 0.2);
-  z-index: 100;
-
-  &__content {
-    z-index: 101;
-    background-color: white;
-    opacity: 1;
-    @include fcc();
-    border-radius: 12px;
-    padding: 24px 64px;
-    gap: 24px;
-    width: fit-content;
-  }
-
-  &__text {
-    @include fcc();
-    gap: 8px;
-  }
-
-  &__answer-box {
-    display: flex;
-    gap: 64px;
-  }
-  &__answer {
-  }
-}
-
 .warning-small {
   display: flex;
   flex-direction: column;
   padding: 12px;
   border-radius: 7px;
   position: fixed;
-  top: 0;
-  right: 0;
+  top: 24px;
+  right: 24px;
+  z-index: 1000;
   &_error {
     background-color: #ffdbdb;
     color: red;
