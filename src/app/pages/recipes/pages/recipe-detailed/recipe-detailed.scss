@@ -162,3 +162,9 @@
     }
   }
 }
+
+.detailed-spinner {
+  position: fixed;
+  top: calc(50vh - 30px);
+  left: calc(50vw - 30px);
+}

@@ -8,7 +8,7 @@
     size="small"
     (click)="backToList()"
   />
-  @if(recipeSignal(); as recipe){
+  @if(!isLoadingSignal() && recipeSignal(); as recipe){
   <div class="container__card">
     <picture class="container__picture">
       <img class="container__image" [src]="recipe.image" alt="picture" />
@@ -106,6 +106,8 @@
       </ol>
     </div>
   </div>
+  } @else {
+  <p-progress-spinner class="detailed-spinner" ariaLabel="loading" />
   }
 </div>
 

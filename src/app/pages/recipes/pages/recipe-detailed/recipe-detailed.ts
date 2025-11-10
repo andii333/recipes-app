@@ -1,14 +1,14 @@
-import { Component, inject, Input, input, OnInit, signal } from '@angular/core';
+import { Component, inject, Input, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { Button } from 'primeng/button';
 import { RecipesService } from '../../../../services/recipes-service';
-import { IRecipe } from '../../../../models/interfaces/recipe.interface';
 import { NgClass } from '@angular/common';
 import { ConfirmPopupModule } from 'primeng/confirmpopup';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { DialogModule } from 'primeng/dialog';
 import { RecipeForm } from '../../components/recipe-form/recipe-form';
+import { ProgressSpinnerModule } from 'primeng/progressspinner';
 
 @Component({
   selector: 'app-recipe-detailed',
@@ -19,6 +19,7 @@ import { RecipeForm } from '../../components/recipe-form/recipe-form';
     ConfirmDialogModule,
     DialogModule,
     RecipeForm,
+    ProgressSpinnerModule,
   ],
   providers: [ConfirmationService, MessageService],
   templateUrl: './recipe-detailed.html',
@@ -31,6 +32,7 @@ export class RecipeDetailed implements OnInit {
   private confirmationService = inject(ConfirmationService);
   private messageService = inject(MessageService);
   recipeSignal = this.recipesService.activeRecipeSignal;
+  isLoadingSignal = this.recipesService.isLoadingSignal;
   visibleRecipeForm = false;
   activeRecipe: number | null = null;
 

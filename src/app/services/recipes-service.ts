@@ -22,10 +22,11 @@ export class RecipesService {
   recipesTotalSignal = this._recipesTotalSignal.asReadonly();
   private _activeRecipeSignal = signal<IRecipe | null>(null);
   activeRecipeSignal = this._activeRecipeSignal.asReadonly();
+  isLoadingSignal = signal<boolean>(false);
 
   getAllRecipes(limit?: number, skip?: number, searchText?: string): void {
+    this.removeAllRecipes();
     let httpParams = new HttpParams();
-
     if (searchText) {
       httpParams = httpParams.set('q', searchText);
     }
@@ -42,6 +43,7 @@ export class RecipesService {
         tap((res) => {
           this._recipes.set(res.recipes);
           this._recipesTotalSignal.set(res.total);
+          this.isLoadingSignal.set(false);
         }),
         catchError((err) => this.warningService.handleError(err))
       )
@@ -49,11 +51,13 @@ export class RecipesService {
   }
 
   getOneRecipe(recipeId: number): Observable<IRecipe> {
+    this.isLoadingSignal.set(true);
     return this.http
       .get<IRecipe>(' https://dummyjson.com/recipes/' + recipeId)
       .pipe(
         tap((recipe) => {
           this._activeRecipeSignal.set(recipe);
+          this.isLoadingSignal.set(false);
         }),
         catchError((err) => this.warningService.handleError(err))
       );
@@ -89,6 +93,7 @@ export class RecipesService {
     skip?: number,
     searchText?: string
   ): void {
+    this.removeAllRecipes();
     let httpParams = new HttpParams();
     if (limit !== undefined) httpParams = httpParams.set('limit', limit);
     if (skip !== undefined) httpParams = httpParams.set('skip', skip);
@@ -112,6 +117,12 @@ export class RecipesService {
 
   removeActiveRecipe() {
     this._activeRecipeSignal.set(null);
+  }
+
+  removeAllRecipes() {
+    this.isLoadingSignal.set(true);
+    this._recipes.set([]);
+    this._recipesTotalSignal.set(0);
   }
 
   updateActiveRecipe(updated: IRecipe): void {

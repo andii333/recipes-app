@@ -16,6 +16,7 @@ import { ConfirmationService, MessageService } from 'primeng/api';
 import { WarningService } from '../../../../services/warning.service';
 import { DialogModule } from 'primeng/dialog';
 import { RecipeForm } from '../../components/recipe-form/recipe-form';
+import { ProgressSpinnerModule } from 'primeng/progressspinner';
 @Component({
   selector: 'app-recipes-table',
   imports: [
@@ -30,6 +31,7 @@ import { RecipeForm } from '../../components/recipe-form/recipe-form';
     ConfirmDialogModule,
     DialogModule,
     RecipeForm,
+    ProgressSpinnerModule,
   ],
   providers: [ConfirmationService, MessageService],
   templateUrl: './recipes-table.html',
@@ -52,6 +54,7 @@ export class RecipesTable implements OnInit {
   searchControl = new FormControl('');
   visibleRecipeForm = false;
   activeRecipeSignal = signal<number | null>(null);
+  isLoadingSignal = this.recipesService.isLoadingSignal;
 
   get recipeTagOptions(): string[] {
     return ['All Tags', ...this.recipeTagsSignal()];

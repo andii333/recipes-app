@@ -60,3 +60,9 @@
     margin: auto;
   }
 }
+
+.form-spinner {
+  width: 30vw;
+  height: 30vh;
+  @include fcc();
+}

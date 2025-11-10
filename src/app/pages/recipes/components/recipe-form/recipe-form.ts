@@ -20,6 +20,7 @@ import { InputText } from 'primeng/inputtext';
 import { InputNumberModule } from 'primeng/inputnumber';
 import { Button } from 'primeng/button';
 import { IRecipe } from '../../../../models/interfaces/recipe.interface';
+import { ProgressSpinnerModule } from 'primeng/progressspinner';
 
 @Component({
   selector: 'app-recipe-form',
@@ -30,6 +31,7 @@ import { IRecipe } from '../../../../models/interfaces/recipe.interface';
     InputNumberModule,
     FormsModule,
     Button,
+    ProgressSpinnerModule,
   ],
   templateUrl: './recipe-form.html',
   styleUrl: './recipe-form.scss',
