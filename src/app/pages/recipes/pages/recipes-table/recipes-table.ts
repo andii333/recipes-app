@@ -127,7 +127,6 @@ export class RecipesTable implements OnInit {
   }
 
   onTagChange(tag: string) {
-    this.searchControl.reset();
     if (this.selectedTag !== 'All Tags') {
       this.recipesService.getRecipesByTag(tag, this.pageSize);
     } else {
