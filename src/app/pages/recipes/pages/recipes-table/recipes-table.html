@@ -27,6 +27,7 @@
       [value]="recipesSignal()"
       [paginator]="true"
       [rows]="pageSize"
+      [first]="limit"
       [rowsPerPageOptions]="[5, 10, 20]"
       [totalRecords]="recipesTotalSignal()"
       (onPage)="onPageChange($event)"
@@ -57,7 +58,7 @@
           <td>{{ recipe.cuisine }}</td>
           <td>
             <span
-              class="table__dificulty"
+              class="table__difficulty"
               [ngClass]="{
                 'bg-green': recipe.difficulty === 'Easy',
                 'bg-yellow': recipe.difficulty === 'Medium',

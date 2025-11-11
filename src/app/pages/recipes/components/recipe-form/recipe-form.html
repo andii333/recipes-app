@@ -26,27 +26,31 @@
   </div>
 
   <div class="form__row">
-    <label>Prep Time (min)</label>
-    <p-inputnumber formControlName="prepTimeMinutes" [min]="0" />
+    <label for="prepTime">Prep Time (min)</label>
+    <p-inputnumber id="prepTime" formControlName="prepTimeMinutes" [min]="0" />
   </div>
 
   <div class="form__row">
-    <label>Cook Time (min)</label>
-    <p-inputnumber formControlName="cookTimeMinutes" [min]="0" />
+    <label for>Cook Time (min)</label>
+    <p-inputnumber id="cookTime" formControlName="cookTimeMinutes" [min]="0" />
   </div>
 
   <div class="form__row">
-    <label>Servings</label>
-    <p-inputnumber formControlName="servings" [min]="1" />
+    <label for="servings">Servings</label>
+    <p-inputnumber id="servings" formControlName="servings" [min]="1" />
   </div>
 
   <div class="form__row">
-    <label>Calories per Serving</label>
-    <p-inputnumber formControlName="caloriesPerServing" [min]="0" />
+    <label for="calories">Calories per Serving</label>
+    <p-inputnumber
+      id="calories"
+      formControlName="caloriesPerServing"
+      [min]="0"
+    />
   </div>
 
   <div class="form__array">
-    <label>Meal Type</label>
+    <label for="meal">Meal Type</label>
     <div class="form__array_row">
       @for(type of mealType.getRawValue(); track $index){
       <div class="form__array_item">
@@ -65,6 +69,7 @@
 
     <div class="form__array_input-box">
       <input
+        id="meal"
         pInputText
         [(ngModel)]="newMealType"
         [ngModelOptions]="{ standalone: true }"
@@ -81,7 +86,7 @@
   </div>
 
   <div class="form__array">
-    <label>Tags</label>
+    <label for="tags">Tags</label>
     <div class="form__array_row">
       @for(tag of tags.getRawValue(); track $index){
       <div class="form__array_item">
@@ -100,6 +105,7 @@
 
     <div class="form__array_input-box">
       <input
+        id="tags"
         pInputText
         [(ngModel)]="newTag"
         [ngModelOptions]="{ standalone: true }"
@@ -116,7 +122,7 @@
   </div>
 
   <div class="form__array">
-    <label>Ingredients</label>
+    <label for="ingredients">Ingredients</label>
     <div class="form__array_column" formArrayName="ingredients">
       @for(ingredient of ingredients.getRawValue(); track $index){
       <div>
@@ -135,6 +141,7 @@
 
     <div class="form__array_input-box">
       <input
+        id="ingredients"
         pInputText
         [(ngModel)]="newIngredient"
         [ngModelOptions]="{ standalone: true }"
@@ -151,7 +158,7 @@
     </div>
   </div>
   <div class="form__array" formArrayName="instructions">
-    <label>Instructions</label>
+    <label for="instructions">Instructions</label>
     <div class="form__array_column">
       @for(instruction of instructions.getRawValue(); track $index){
       <div>
@@ -171,6 +178,7 @@
 
     <div class="form__array_input-box">
       <input
+        id="instructions"
         pInputText
         [(ngModel)]="newInstruction"
         [ngModelOptions]="{ standalone: true }"

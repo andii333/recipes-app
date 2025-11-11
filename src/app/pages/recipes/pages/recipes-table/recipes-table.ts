@@ -2,7 +2,7 @@ import { NgClass } from '@angular/common';
 import { Component, DestroyRef, inject, OnInit, signal } from '@angular/core';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { SelectModule } from 'primeng/select';
-import { TableModule } from 'primeng/table';
+import { TableModule, TablePageEvent } from 'primeng/table';
 import { ChipModule } from 'primeng/chip';
 import { RecipesService } from '../../../../services/recipes-service';
 import { IRecipe } from '../../../../models/interfaces/recipe.interface';
@@ -48,7 +48,7 @@ export class RecipesTable implements OnInit {
   recipesSignal = this.recipesService.recipesSignal;
   recipeTagsSignal = this.recipesService.recipeTagsSignal;
   recipesTotalSignal = this.recipesService.recipesTotalSignal;
-  selectedTag: string = 'All Tags';
+  selectedTag = 'All Tags';
   pageSize = 5;
   limit = 0;
   searchControl = new FormControl('');
@@ -112,7 +112,7 @@ export class RecipesTable implements OnInit {
       });
   }
 
-  onPageChange(event: any) {
+  onPageChange(event: TablePageEvent) {
     const skip = event.first;
     const limit = event.rows;
     this.pageSize = limit;

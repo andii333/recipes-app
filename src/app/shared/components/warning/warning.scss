@@ -9,13 +9,11 @@
   right: 24px;
   z-index: 1000;
   &_error {
-    background-color: #ffdbdb;
-    color: red;
+    background-color: var(--red-background);
+    color: var(--red);
   }
   &_success {
-    background-color: #a3ffa7;
-    color: green;
-  }
-  &__text {
+    background-color: var(--green-background);
+    color: var(--green);
   }
 }

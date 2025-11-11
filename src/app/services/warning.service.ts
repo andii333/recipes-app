@@ -44,7 +44,7 @@ export class WarningService {
   }
 
   handleError(error: IError): Observable<never> {
-    let message = error?.error?.message;
+    const message = error?.error?.message;
     this.showErrorWarning(message);
     return throwError(() => new Error(error?.error?.message));
   }

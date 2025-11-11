@@ -1,7 +1,7 @@
 @use "mixins" as *;
 @use "primeNG" as *;
 @use "colors" as *;
-@import "./reset.scss";
+@use "reset" as *;
 @import "@fontsource/roboto/index.css";
 @import "@fontsource/inter/index.css";
 @import "primeicons/primeicons.css";
