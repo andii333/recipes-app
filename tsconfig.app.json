@@ -11,7 +11,8 @@
       "@shared/*": ["app/shared/*"],
       "@models/*": ["app/models/*"],
       "@services/*": ["app/services/*"],
-      "@guards/*": ["app/guards/*"]
+      "@guards/*": ["app/guards/*"],
+      "@env/*": ["environments/*"]
     }
   },
   "include": ["src/**/*.ts"],
