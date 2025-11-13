@@ -1,6 +1,11 @@
+// Angular
 import { Injectable, signal } from '@angular/core';
+
+// Third-party libraries
 import { Observable, throwError } from 'rxjs';
-import { IError } from '../models/interfaces/error.interface';
+
+// Project alias imports
+import { IError } from '@models/interfaces/error.interface';
 
 @Injectable({ providedIn: 'root' })
 export class WarningService {

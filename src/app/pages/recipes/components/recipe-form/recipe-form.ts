@@ -1,26 +1,31 @@
+// Angular
 import {
   Component,
   EventEmitter,
-  inject,
   Input,
   OnChanges,
   Output,
+  inject,
 } from '@angular/core';
 import {
-  FormGroup,
-  FormBuilder,
-  Validators,
   FormArray,
-  ReactiveFormsModule,
+  FormBuilder,
+  FormGroup,
   FormsModule,
+  ReactiveFormsModule,
+  Validators,
 } from '@angular/forms';
-import { RecipesService } from '../../../../services/recipes-service';
-import { SelectModule } from 'primeng/select';
-import { InputText } from 'primeng/inputtext';
-import { InputNumberModule } from 'primeng/inputnumber';
+
+// Third-party libraries
 import { Button } from 'primeng/button';
-import { IRecipe } from '../../../../models/interfaces/recipe.interface';
+import { InputNumberModule } from 'primeng/inputnumber';
+import { InputText } from 'primeng/inputtext';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
+import { SelectModule } from 'primeng/select';
+
+// Project alias imports
+import { IRecipe } from '@models/interfaces/recipe.interface';
+import { RecipesService } from '@services/recipes-service';
 
 @Component({
   selector: 'app-recipe-form',

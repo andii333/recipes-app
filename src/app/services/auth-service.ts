@@ -1,7 +1,12 @@
+// Angular
 import { HttpClient } from '@angular/common/http';
-import { inject, Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
+
+// Third-party libraries
 import { Observable } from 'rxjs';
-import { IAuthResponse } from '../models/interfaces/auth-response.interface';
+
+// Project alias imports
+import { IAuthResponse } from '@models/interfaces/auth-response.interface';
 
 @Injectable({
   providedIn: 'root',

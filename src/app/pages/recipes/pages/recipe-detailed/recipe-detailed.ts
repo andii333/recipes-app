@@ -1,14 +1,19 @@
-import { Component, inject, Input, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
-import { Button } from 'primeng/button';
-import { RecipesService } from '../../../../services/recipes-service';
+// Angular
 import { NgClass } from '@angular/common';
-import { ConfirmPopupModule } from 'primeng/confirmpopup';
+import { Component, Input, OnInit, inject } from '@angular/core';
+import { Router } from '@angular/router';
+
+// Third-party libraries
 import { ConfirmationService, MessageService } from 'primeng/api';
+import { Button } from 'primeng/button';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
+import { ConfirmPopupModule } from 'primeng/confirmpopup';
 import { DialogModule } from 'primeng/dialog';
-import { RecipeForm } from '../../components/recipe-form/recipe-form';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
+
+// Project alias imports
+import { RecipeForm } from '@pages/recipes/components/recipe-form/recipe-form';
+import { RecipesService } from '@services/recipes-service';
 
 @Component({
   selector: 'app-recipe-detailed',

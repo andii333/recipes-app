@@ -1,7 +1,13 @@
+// Angular
 import { Component } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
+
+// Third-party libraries
 import { MessageModule } from 'primeng/message';
-import { Warning } from './shared/components/warning/warning';
+
+// Project alias imports
+import { Warning } from '@shared/components/warning/warning';
+
 @Component({
   selector: 'app-root',
   imports: [RouterOutlet, MessageModule, Warning],

@@ -1,11 +1,13 @@
+// Angular
 import { HttpClient, HttpParams } from '@angular/common/http';
-import { inject, Injectable, signal } from '@angular/core';
+import { Injectable, inject, signal } from '@angular/core';
+
+// Third-party libraries
 import { catchError, Observable, tap } from 'rxjs';
-import {
-  IRecipe,
-  IRecipesResponse,
-} from '../models/interfaces/recipe.interface';
-import { WarningService } from './warning.service';
+
+// Project alias imports
+import { IRecipe, IRecipesResponse } from '@models/interfaces/recipe.interface';
+import { WarningService } from '@services/warning.service';
 
 @Injectable({
   providedIn: 'root',

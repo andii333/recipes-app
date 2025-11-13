@@ -1,5 +1,8 @@
+// Angular
 import { Component, inject } from '@angular/core';
-import { WarningService } from '../../../services/warning.service';
+
+// Project alias imports
+import { WarningService } from '@services/warning.service';
 
 @Component({
   selector: 'app-warning',

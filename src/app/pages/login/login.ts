@@ -1,12 +1,17 @@
-import { Router } from '@angular/router';
-import { Component, ElementRef, inject, ViewChild } from '@angular/core';
+// Angular
+import { Component, ElementRef, ViewChild, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { AuthService } from '../../services/auth-service';
+import { Router } from '@angular/router';
+
+// Third-party libraries
 import { ButtonModule } from 'primeng/button';
 import { InputTextModule } from 'primeng/inputtext';
-import { catchError } from 'rxjs';
-import { WarningService } from '../../services/warning.service';
 import { TooltipModule } from 'primeng/tooltip';
+import { catchError } from 'rxjs';
+
+// Project alias imports
+import { AuthService } from '@services/auth-service';
+import { WarningService } from '@services/warning.service';
 
 @Component({
   selector: 'app-login',

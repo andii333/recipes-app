@@ -1,7 +1,12 @@
+// Angular
 import { Component, inject } from '@angular/core';
 import { Router, RouterOutlet } from '@angular/router';
+
+// Third-party libraries
 import { Button } from 'primeng/button';
-import { AuthService } from '../../services/auth-service';
+
+// Project alias imports
+import { AuthService } from '@services/auth-service';
 
 @Component({
   selector: 'app-recipes',

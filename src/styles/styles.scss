@@ -1,9 +1,14 @@
+// SCSS modules
+@use "colors" as *;
 @use "mixins" as *;
 @use "primeNG" as *;
-@use "colors" as *;
 @use "reset" as *;
-@import "@fontsource/roboto/index.css";
+
+// Fonts
 @import "@fontsource/inter/index.css";
+@import "@fontsource/roboto/index.css";
+
+// Third-party CSS
 @import "primeicons/primeicons.css";
 
 body {

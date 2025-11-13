@@ -1,22 +1,28 @@
+// Angular
 import { NgClass } from '@angular/common';
-import { Component, DestroyRef, inject, OnInit, signal } from '@angular/core';
+import { Component, DestroyRef, OnInit, inject, signal } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { ActivatedRoute, Router } from '@angular/router';
+
+// Third-party libraries
+import { ConfirmationService, MessageService } from 'primeng/api';
+import { Button } from 'primeng/button';
+import { ChipModule } from 'primeng/chip';
+import { ConfirmDialogModule } from 'primeng/confirmdialog';
+import { DialogModule } from 'primeng/dialog';
+import { InputText } from 'primeng/inputtext';
+import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { SelectModule } from 'primeng/select';
 import { TableModule, TablePageEvent } from 'primeng/table';
-import { ChipModule } from 'primeng/chip';
-import { RecipesService } from '../../../../services/recipes-service';
-import { IRecipe } from '../../../../models/interfaces/recipe.interface';
-import { InputText } from 'primeng/inputtext';
-import { Button } from 'primeng/button';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { debounceTime, distinctUntilChanged } from 'rxjs';
-import { Router, ActivatedRoute } from '@angular/router';
-import { ConfirmDialogModule } from 'primeng/confirmdialog';
-import { ConfirmationService, MessageService } from 'primeng/api';
-import { WarningService } from '../../../../services/warning.service';
-import { DialogModule } from 'primeng/dialog';
-import { RecipeForm } from '../../components/recipe-form/recipe-form';
-import { ProgressSpinnerModule } from 'primeng/progressspinner';
+
+// Project alias imports
+import { IRecipe } from '@models/interfaces/recipe.interface';
+import { RecipeForm } from '@pages/recipes/components/recipe-form/recipe-form';
+import { RecipesService } from '@services/recipes-service';
+import { WarningService } from '@services/warning.service';
+
 @Component({
   selector: 'app-recipes-table',
   imports: [
