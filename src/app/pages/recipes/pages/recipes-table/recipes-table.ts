@@ -21,18 +21,17 @@ import { debounceTime, distinctUntilChanged } from 'rxjs';
 import { IRecipe } from '@models/interfaces/recipe.interface';
 import { RecipeForm } from '@pages/recipes/components/recipe-form/recipe-form';
 import { RecipesService } from '@services/recipes-service';
-import { WarningService } from '@services/warning.service';
 
 @Component({
   selector: 'app-recipes-table',
   imports: [
     SelectModule,
-    FormsModule,
     TableModule,
     NgClass,
     ChipModule,
     InputText,
     Button,
+    FormsModule,
     ReactiveFormsModule,
     ConfirmDialogModule,
     DialogModule,
@@ -44,115 +43,93 @@ import { WarningService } from '@services/warning.service';
   styleUrl: './recipes-table.scss',
 })
 export class RecipesTable implements OnInit {
-  private recipesService = inject(RecipesService);
-  private destroyRef = inject(DestroyRef);
-  private router = inject(Router);
-  private route = inject(ActivatedRoute);
-  private confirmationService = inject(ConfirmationService);
-  private messageService = inject(MessageService);
-  private warningService = inject(WarningService);
-  recipesSignal = this.recipesService.recipesSignal;
-  recipeTagsSignal = this.recipesService.recipeTagsSignal;
-  recipesTotalSignal = this.recipesService.recipesTotalSignal;
-  selectedTag = 'All Tags';
-  pageSize = 5;
+  // Constants
+  private readonly ALL_TAGS = 'All Tags';
+  private readonly DEFAULT_PAGE_SIZE = 5;
+  private readonly SEARCH_DEBOUNCE_TIME = 300;
+
+  // Dependencies
+  private readonly recipesService = inject(RecipesService);
+  private readonly destroyRef = inject(DestroyRef);
+  private readonly router = inject(Router);
+  private readonly route = inject(ActivatedRoute);
+  private readonly confirmationService = inject(ConfirmationService);
+  private readonly messageService = inject(MessageService);
+
+  // Signals from service
+  readonly recipesSignal = this.recipesService.recipesSignal;
+  readonly recipeTagsSignal = this.recipesService.recipeTagsSignal;
+  readonly recipesTotalSignal = this.recipesService.recipesTotalSignal;
+  readonly isLoadingSignal = this.recipesService.isLoadingSignal;
+
+  // Local state
+  readonly activeRecipeSignal = signal<number | null>(null);
+  readonly searchControl = new FormControl('');
+
+  selectedTag = this.ALL_TAGS;
+  pageSize = this.DEFAULT_PAGE_SIZE;
   limit = 0;
-  searchControl = new FormControl('');
   visibleRecipeForm = false;
-  activeRecipeSignal = signal<number | null>(null);
-  isLoadingSignal = this.recipesService.isLoadingSignal;
+
+  private isInitialized = false;
 
   get recipeTagOptions(): string[] {
-    return ['All Tags', ...this.recipeTagsSignal()];
+    return [this.ALL_TAGS, ...this.recipeTagsSignal()];
   }
 
   ngOnInit(): void {
     if (this.recipesSignal().length !== 0) return;
-    this.route.queryParamMap
-      .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe((params) => {
-        const search = params.get('search') ?? '';
-        const tag = params.get('tag') ?? 'All Tags';
-        const page = +(params.get('page') ?? '0');
-        const size = +(params.get('size') ?? this.pageSize);
 
-        this.searchControl.setValue(search, { emitEvent: false });
-        this.selectedTag = tag;
-        this.pageSize = size;
-        this.limit = page * size;
-
-        if (tag !== 'All Tags') {
-          this.recipesService.getRecipesByTag(
-            tag,
-            this.pageSize,
-            this.limit,
-            search
-          );
-        } else {
-          this.recipesService.getAllRecipes(this.pageSize, this.limit, search);
-        }
-      });
-
-    if (this.recipeTagsSignal.length === 0) {
-      this.recipesService.getRecipeTags();
-    }
-    this.onSearchChange();
+    this.initializeFromQueryParams();
+    this.loadRecipeTagsIfNeeded();
+    this.setupSearchListener();
   }
 
-  onSearchChange() {
+  onSearchChange(): void {
     this.searchControl.valueChanges
       .pipe(
-        debounceTime(300),
+        debounceTime(this.SEARCH_DEBOUNCE_TIME),
         distinctUntilChanged(),
         takeUntilDestroyed(this.destroyRef)
       )
       .subscribe((searchText: string | null) => {
-        if (searchText) this.selectedTag = 'All Tags';
+        if (searchText) {
+          this.selectedTag = this.ALL_TAGS;
+        }
+
         this.limit = 0;
-        this.recipesService.getAllRecipes(this.pageSize, 0, searchText ?? '');
         this.updateUrl({
           search: searchText ?? undefined,
           tag: this.selectedTag,
           page: 0,
         });
+        this.loadRecipes({ searchText: searchText ?? '' });
       });
   }
 
-  onPageChange(event: TablePageEvent) {
+  onPageChange(event: TablePageEvent): void {
     const skip = event.first;
     const limit = event.rows;
     this.pageSize = limit;
+    this.limit = skip;
     const page = skip / limit;
 
-    if (this.selectedTag !== 'All Tags') {
-      this.recipesService.getRecipesByTag(this.selectedTag, limit, skip);
-    } else {
-      this.recipesService.getAllRecipes(limit, skip);
-    }
     this.updateUrl({ page });
+    this.loadRecipes({ limit, skip });
   }
 
-  onTagChange(tag: string) {
-    if (this.selectedTag !== 'All Tags') {
-      this.recipesService.getRecipesByTag(tag, this.pageSize);
-    } else {
-      this.recipesService.getAllRecipes(
-        this.pageSize,
-        0,
-        this.searchControl.value ?? ''
-      );
-    }
+  onTagChange(tag: string): void {
+    this.selectedTag = tag;
+    this.limit = 0;
     this.updateUrl({ tag, page: 0, search: '' });
+    this.loadRecipes({ limit: this.pageSize, skip: 0 });
   }
 
-  onDelete(recipeId: number) {
+  onDelete(recipeId: number): void {
     this.recipesService.removeRecipeFromSignal(recipeId);
-    this.warningService.showSuccessWarning(
-      'The recipe was successfully deleted'
-    );
   }
 
-  confirmDelete(event: Event, recipeId: number) {
+  confirmDelete(event: Event, recipeId: number): void {
     this.confirmationService.confirm({
       target: event.currentTarget as EventTarget,
       message: 'Do you want to delete this recipe?',
@@ -167,7 +144,6 @@ export class RecipesTable implements OnInit {
         label: 'Delete',
         severity: 'danger',
       },
-
       accept: () => {
         this.messageService.add({
           severity: 'info',
@@ -186,12 +162,83 @@ export class RecipesTable implements OnInit {
     });
   }
 
+  onView(recipe: IRecipe): void {
+    this.router.navigate(['/recipes', recipe.id], {
+      queryParamsHandling: 'preserve',
+    });
+  }
+
+  onEdit(recipeId: number): void {
+    this.activeRecipeSignal.set(recipeId);
+    this.visibleRecipeForm = true;
+  }
+
+  closeDialog(): void {
+    this.visibleRecipeForm = false;
+    this.activeRecipeSignal.set(null);
+  }
+
+  // Private methods
+  private initializeFromQueryParams(): void {
+    this.route.queryParamMap
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((params) => {
+        const search = params.get('search') ?? '';
+        const tag = params.get('tag') ?? this.ALL_TAGS;
+        const page = +(params.get('page') ?? '0');
+        const size = +(params.get('size') ?? this.DEFAULT_PAGE_SIZE);
+
+        this.searchControl.setValue(search, { emitEvent: false });
+        this.selectedTag = tag;
+        this.pageSize = size;
+        this.limit = page * size;
+
+        if (!this.isInitialized) {
+          this.isInitialized = true;
+          this.loadRecipes({
+            limit: this.pageSize,
+            skip: this.limit,
+            searchText: search,
+          });
+        }
+      });
+  }
+
+  private loadRecipeTagsIfNeeded(): void {
+    if (this.recipeTagsSignal().length === 0) {
+      this.recipesService.getRecipeTags().subscribe();
+    }
+  }
+
+  private setupSearchListener(): void {
+    this.onSearchChange();
+  }
+
+  private loadRecipes(options: {
+    limit?: number;
+    skip?: number;
+    searchText?: string;
+  }): void {
+    const { limit, skip, searchText } = options;
+    const params = {
+      limit: limit ?? this.pageSize,
+      skip: skip ?? this.limit,
+      searchText: searchText ?? this.searchControl.value ?? '',
+    };
+
+    if (this.selectedTag !== this.ALL_TAGS) {
+      this.recipesService.getRecipesByTag(this.selectedTag, params).subscribe();
+    } else {
+      this.recipesService.getAllRecipes(params).subscribe();
+    }
+  }
+
   private updateUrl(params: {
     search?: string;
     tag?: string;
     page?: number;
     size?: number;
-  }) {
+  }): void {
     const queryParams = {
       search: params.search ?? this.searchControl.value ?? '',
       tag: params.tag ?? this.selectedTag,
@@ -204,21 +251,5 @@ export class RecipesTable implements OnInit {
       queryParams,
       queryParamsHandling: 'merge',
     });
-  }
-
-  onView(recipe: IRecipe) {
-    this.router.navigate(['/recipes', recipe.id], {
-      queryParamsHandling: 'preserve',
-    });
-  }
-
-  onEdit(recipeId: number) {
-    this.activeRecipeSignal.set(recipeId);
-    this.visibleRecipeForm = true;
-  }
-
-  closeDialog() {
-    this.visibleRecipeForm = false;
-    this.activeRecipeSignal.set(null);
   }
 }
