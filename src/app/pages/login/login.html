@@ -1,5 +1,9 @@
 <div class="container">
-  <form class="container__form form" (ngSubmit)="onSubmit()">
+  <form
+    #loginForm="ngForm"
+    class="container__form form"
+    (ngSubmit)="onSubmit()"
+  >
     <header class="container__header">
       <picture class="container__picture">
         <img
@@ -11,41 +15,45 @@
       <h1 class="container__title">Recipe Manager</h1>
       <p class="container__subtitle">Sign in to manage your recipes</p>
     </header>
+
     <div class="form__group">
       <label class="form__label" for="username">Username</label>
       <input
         #usernameInput
         pInputText
         class="form__input"
+        [class.form__input_error]="isFieldInvalid('username')"
         type="text"
         id="username"
         name="username"
         placeholder="Enter your username"
         [(ngModel)]="username"
-        [pTooltip]="!username && isSubmitted ? 'field cannot be empty' : ''"
-        tooltipPosition="bottom"
-        tooltipEvent="focus"
         required
       />
+      @if(isFieldInvalid('username')) {
+      <small class="form__error">{{ getErrorMessage("username") }}</small>
+      }
     </div>
+
     <div class="form__group">
       <label class="form__label" for="password">Password</label>
       <input
         #passwordInput
         pInputText
         class="form__input"
+        [class.form__input--error]="isFieldInvalid('password')"
         type="password"
         id="password"
         name="password"
         placeholder="Enter your password"
         [(ngModel)]="password"
-        [pTooltip]="!password && isSubmitted ? 'field cannot be empty' : ''"
-        tooltipPosition="bottom"
-        tooltipEvent="focus"
         required
       />
-      <span></span>
+      @if(isFieldInvalid('password')) {
+      <small class="form__error">{{ getErrorMessage("password") }}</small>
+      }
     </div>
+
     <p-button
       class="form__btn"
       type="submit"

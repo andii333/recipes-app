@@ -10,6 +10,7 @@
     @include fc();
     gap: 6px;
   }
+
   &__picture {
     margin-bottom: 16px;
     width: 56px;
@@ -20,6 +21,7 @@
     margin: auto;
     margin-bottom: 16px;
   }
+
   &__icon {
     width: 32px;
     height: 32px;
@@ -40,6 +42,7 @@
     width: 446.5px;
   }
 }
+
 .form {
   padding: 24px;
   @include fc();
@@ -50,6 +53,25 @@
   &__group {
     @include fc();
     gap: 8px;
+  }
+
+  &__input {
+    transition: border-color 0.2s ease;
+
+    &_error {
+      border-color: var(--red);
+
+      &:focus {
+        border-color: var(--red);
+        box-shadow: 0 0 0 0.2rem rgba(239, 68, 68, 0.25);
+      }
+    }
+  }
+
+  &__error {
+    color: var(--red);
+    font-size: 12px;
+    margin-top: -4px;
   }
 
   &__btn {
