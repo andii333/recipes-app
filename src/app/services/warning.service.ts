@@ -76,11 +76,11 @@ export class WarningService {
   }
 
   showSuccessWarning(text?: string, timeout?: number): void {
-    this.showWarning('success', text || '', timeout);
+    this.showWarning('success', text || this.DEFAULT_SUCCESS, timeout);
   }
 
   showErrorWarning(text?: string, timeout?: number): void {
-    this.showWarning('error', text || '', timeout);
+    this.showWarning('error', text || this.DEFAULT_ERROR, timeout);
   }
 
   handleError(error: IError): Observable<never> {
