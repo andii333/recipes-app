@@ -31,25 +31,37 @@ import { RecipesService } from '@services/recipes-service';
   styleUrl: './recipe-detailed.scss',
 })
 export class RecipeDetailed implements OnInit {
+  // Input
   @Input() id!: string;
-  private router = inject(Router);
-  private recipesService = inject(RecipesService);
-  private confirmationService = inject(ConfirmationService);
-  private messageService = inject(MessageService);
+
+  // Services
+  private readonly router = inject(Router);
+  private readonly recipesService = inject(RecipesService);
+  private readonly confirmationService = inject(ConfirmationService);
+  private readonly messageService = inject(MessageService);
+
+  // Signals
   recipeSignal = this.recipesService.activeRecipeSignal;
   isLoadingSignal = this.recipesService.isLoadingSignal;
+
+  // Dialog state
   visibleRecipeForm = false;
   activeRecipe: number | null = null;
 
-  ngOnInit(): void {
-    this.recipesService.getOneRecipe(+this.id).subscribe();
+  // Computed
+  get recipeId(): number {
+    return +this.id;
   }
 
-  backToList() {
+  ngOnInit(): void {
+    this.recipesService.getOneRecipe(this.recipeId).subscribe();
+  }
+
+  backToList(): void {
     this.router.navigate(['/recipes'], { queryParamsHandling: 'preserve' });
   }
 
-  confirmDelete(event: Event) {
+  confirmDelete(event: Event): void {
     this.confirmationService.confirm({
       target: event.currentTarget as EventTarget,
       message: 'Do you want to delete this recipe?',
@@ -67,7 +79,7 @@ export class RecipeDetailed implements OnInit {
         this.messageService.add({
           severity: 'info',
           summary: 'Confirmed',
-          detail: 'Record deleted',
+          detail: 'Record deleted successfully',
           life: 3000,
         });
         this.onDelete();
@@ -75,25 +87,25 @@ export class RecipeDetailed implements OnInit {
       reject: () => {
         this.messageService.add({
           severity: 'error',
-          summary: 'Rejected',
-          detail: 'You have rejected',
+          summary: 'Cancelled',
+          detail: 'Recipe deletion cancelled',
           life: 3000,
         });
       },
     });
   }
 
-  onDelete() {
-    this.recipesService.removeRecipeFromSignal(+this.id);
+  onDelete(): void {
+    this.recipesService.removeRecipeFromSignal(this.recipeId);
     this.backToList();
   }
 
-  onEdit(recipeId: number) {
+  onEdit(recipeId: number): void {
     this.activeRecipe = recipeId;
     this.visibleRecipeForm = true;
   }
 
-  closeDialog() {
+  closeDialog(): void {
     this.visibleRecipeForm = false;
     this.activeRecipe = null;
   }
