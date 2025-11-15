@@ -4,7 +4,7 @@ import { Component, Input, OnInit, inject } from '@angular/core';
 import { Router } from '@angular/router';
 
 // Third-party libraries
-import { ConfirmationService, MessageService } from 'primeng/api';
+import { ConfirmationService } from 'primeng/api';
 import { Button } from 'primeng/button';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { ConfirmPopupModule } from 'primeng/confirmpopup';
@@ -14,6 +14,7 @@ import { ProgressSpinnerModule } from 'primeng/progressspinner';
 // Project alias imports
 import { RecipeForm } from '@pages/recipes/components/recipe-form/recipe-form';
 import { RecipesService } from '@services/recipes-service';
+import { WarningService } from '@services/warning.service';
 
 @Component({
   selector: 'app-recipe-detailed',
@@ -26,7 +27,7 @@ import { RecipesService } from '@services/recipes-service';
     RecipeForm,
     ProgressSpinnerModule,
   ],
-  providers: [ConfirmationService, MessageService],
+  providers: [ConfirmationService],
   templateUrl: './recipe-detailed.html',
   styleUrl: './recipe-detailed.scss',
 })
@@ -38,7 +39,7 @@ export class RecipeDetailed implements OnInit {
   private readonly router = inject(Router);
   private readonly recipesService = inject(RecipesService);
   private readonly confirmationService = inject(ConfirmationService);
-  private readonly messageService = inject(MessageService);
+  private readonly warningService = inject(WarningService);
 
   // Signals
   recipeSignal = this.recipesService.activeRecipeSignal;
@@ -54,6 +55,7 @@ export class RecipeDetailed implements OnInit {
   }
 
   ngOnInit(): void {
+    this.recipesService.removeActiveRecipe();
     this.recipesService.getOneRecipe(this.recipeId).subscribe();
   }
 
@@ -76,21 +78,10 @@ export class RecipeDetailed implements OnInit {
         severity: 'danger',
       },
       accept: () => {
-        this.messageService.add({
-          severity: 'info',
-          summary: 'Confirmed',
-          detail: 'Record deleted successfully',
-          life: 3000,
-        });
         this.onDelete();
       },
       reject: () => {
-        this.messageService.add({
-          severity: 'error',
-          summary: 'Cancelled',
-          detail: 'Recipe deletion cancelled',
-          life: 3000,
-        });
+        this.warningService.showErrorWarning('Failed to delete the recipe');
       },
     });
   }
