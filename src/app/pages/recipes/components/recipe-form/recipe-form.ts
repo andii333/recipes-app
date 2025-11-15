@@ -71,17 +71,23 @@ export class RecipeForm implements OnInit, OnChanges {
 
   // Lifecycle management
   ngOnInit(): void {
+    const activeRecipe = this.recipeSignal();
     this.recipeForm = this.createForm();
+    if (activeRecipe) this.populateForm(activeRecipe);
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    if (changes['recipeId'] && this.recipeId) {
+    const activeRecipe = this.recipeSignal();
+    if (
+      changes['recipeId'] &&
+      this.recipeId &&
+      activeRecipe &&
+      this.recipeId !== activeRecipe?.id
+    ) {
       this.recipesService.removeActiveRecipe();
       this.recipesService
         .getOneRecipe(this.recipeId)
         .subscribe((recipe) => this.populateForm(recipe));
-    } else {
-      this.resetForm();
     }
   }
 
