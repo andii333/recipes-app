@@ -17,12 +17,14 @@
       (onChange)="onTagChange($event.value)"
     />
   </div>
-  @if(recipesSignal().length){
+  @if (!isLoadingSignal()){
   <p class="container__amount">
     Showing {{ recipesSignal().length }} of {{ recipesTotalSignal() }} recipes
   </p>
+  }
 
   <div class="container__table table">
+    @if(recipesSignal().length){
     <p-table
       [value]="recipesSignal()"
       [paginator]="true"
@@ -106,12 +108,14 @@
         </tr>
       </ng-template>
     </p-table>
+    } @else if (isLoadingSignal()){
+    <div class="table__spinner">
+      <p-progress-spinner ariaLabel="loading" />
+    </div>
+    } @else {
+    <p>No recipes found</p>
+    }
   </div>
-  } @else if (isLoadingSignal()){
-  <p-progress-spinner ariaLabel="loading" />
-  } @else {
-  <p>No recipes found</p>
-  }
 </div>
 
 <p-confirmDialog></p-confirmDialog>

@@ -3,7 +3,7 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable, inject, signal } from '@angular/core';
 
 // Third-party libraries
-import { catchError, finalize, Observable, tap } from 'rxjs';
+import { catchError, delay, finalize, Observable, tap } from 'rxjs';
 
 // Project alias imports
 import { IRecipe, IRecipesResponse } from '@models/interfaces/recipe.interface';
@@ -43,6 +43,7 @@ export class RecipesService {
     const url = params?.searchText ? `${this.API_URL}/search` : this.API_URL;
 
     return this.http.get<IRecipesResponse>(url, { params: httpParams }).pipe(
+      delay(2000),
       tap((res) => {
         this._recipes.set(res.recipes);
         this._recipesTotal.set(res.total);

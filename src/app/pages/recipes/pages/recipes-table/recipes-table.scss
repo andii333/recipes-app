@@ -37,6 +37,7 @@
   }
 }
 .table {
+  min-height: 500px;
   &__image {
     width: 60px;
     height: 60px;
@@ -59,5 +60,8 @@
     background-color: white;
     @include border();
     font-size: 12px;
+  }
+  &__spinner {
+    @include fcc();
   }
 }
