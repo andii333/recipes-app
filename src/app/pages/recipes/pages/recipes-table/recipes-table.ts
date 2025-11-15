@@ -6,7 +6,7 @@ import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 
 // Third-party libraries
-import { ConfirmationService, MessageService } from 'primeng/api';
+import { ConfirmationService } from 'primeng/api';
 import { Button } from 'primeng/button';
 import { ChipModule } from 'primeng/chip';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
@@ -21,6 +21,7 @@ import { debounceTime, distinctUntilChanged } from 'rxjs';
 import { IRecipe } from '@models/interfaces/recipe.interface';
 import { RecipeForm } from '@pages/recipes/components/recipe-form/recipe-form';
 import { RecipesService } from '@services/recipes-service';
+import { WarningService } from '@services/warning.service';
 
 @Component({
   selector: 'app-recipes-table',
@@ -38,7 +39,7 @@ import { RecipesService } from '@services/recipes-service';
     RecipeForm,
     ProgressSpinnerModule,
   ],
-  providers: [ConfirmationService, MessageService],
+  providers: [ConfirmationService],
   templateUrl: './recipes-table.html',
   styleUrl: './recipes-table.scss',
 })
@@ -54,7 +55,7 @@ export class RecipesTable implements OnInit {
   private readonly router = inject(Router);
   private readonly route = inject(ActivatedRoute);
   private readonly confirmationService = inject(ConfirmationService);
-  private readonly messageService = inject(MessageService);
+  private readonly warningService = inject(WarningService);
 
   // Signals from service
   readonly recipesSignal = this.recipesService.recipesSignal;
@@ -82,29 +83,7 @@ export class RecipesTable implements OnInit {
 
     this.initializeFromQueryParams();
     this.loadRecipeTagsIfNeeded();
-    this.setupSearchListener();
-  }
-
-  onSearchChange(): void {
-    this.searchControl.valueChanges
-      .pipe(
-        debounceTime(this.SEARCH_DEBOUNCE_TIME),
-        distinctUntilChanged(),
-        takeUntilDestroyed(this.destroyRef)
-      )
-      .subscribe((searchText: string | null) => {
-        if (searchText) {
-          this.selectedTag = this.ALL_TAGS;
-        }
-
-        this.limit = 0;
-        this.updateUrl({
-          search: searchText ?? undefined,
-          tag: this.selectedTag,
-          page: 0,
-        });
-        this.loadRecipes({ searchText: searchText ?? '' });
-      });
+    this.onSearchChange();
   }
 
   onPageChange(event: TablePageEvent): void {
@@ -121,6 +100,7 @@ export class RecipesTable implements OnInit {
   onTagChange(tag: string): void {
     this.selectedTag = tag;
     this.limit = 0;
+    this.searchControl.setValue('', { emitEvent: false });
     this.updateUrl({ tag, page: 0, search: '' });
     this.loadRecipes({ limit: this.pageSize, skip: 0 });
   }
@@ -145,19 +125,10 @@ export class RecipesTable implements OnInit {
         severity: 'danger',
       },
       accept: () => {
-        this.messageService.add({
-          severity: 'info',
-          summary: 'Confirmed',
-          detail: 'Record deleted',
-        });
         this.onDelete(recipeId);
       },
       reject: () => {
-        this.messageService.add({
-          severity: 'error',
-          summary: 'Rejected',
-          detail: 'You have rejected',
-        });
+        this.warningService.showErrorWarning('Failed to delete the recipe');
       },
     });
   }
@@ -179,6 +150,28 @@ export class RecipesTable implements OnInit {
   }
 
   // Private methods
+  private onSearchChange(): void {
+    this.searchControl.valueChanges
+      .pipe(
+        debounceTime(this.SEARCH_DEBOUNCE_TIME),
+        distinctUntilChanged(),
+        takeUntilDestroyed(this.destroyRef)
+      )
+      .subscribe((searchText: string | null) => {
+        if (searchText) {
+          this.selectedTag = this.ALL_TAGS;
+        }
+
+        this.limit = 0;
+        this.updateUrl({
+          search: searchText ?? undefined,
+          tag: this.selectedTag,
+          page: 0,
+        });
+        this.loadRecipes({ searchText: searchText ?? '' });
+      });
+  }
+
   private initializeFromQueryParams(): void {
     this.route.queryParamMap
       .pipe(takeUntilDestroyed(this.destroyRef))
@@ -208,10 +201,6 @@ export class RecipesTable implements OnInit {
     if (this.recipeTagsSignal().length === 0) {
       this.recipesService.getRecipeTags().subscribe();
     }
-  }
-
-  private setupSearchListener(): void {
-    this.onSearchChange();
   }
 
   private loadRecipes(options: {
