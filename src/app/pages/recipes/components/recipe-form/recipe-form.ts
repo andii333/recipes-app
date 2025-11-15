@@ -6,6 +6,7 @@ import {
   OnChanges,
   OnInit,
   Output,
+  SimpleChanges,
   inject,
 } from '@angular/core';
 import {
@@ -73,8 +74,9 @@ export class RecipeForm implements OnInit, OnChanges {
     this.recipeForm = this.createForm();
   }
 
-  ngOnChanges(): void {
-    if (this.recipeId) {
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['recipeId'] && this.recipeId) {
+      this.recipesService.removeActiveRecipe();
       this.recipesService
         .getOneRecipe(this.recipeId)
         .subscribe((recipe) => this.populateForm(recipe));
@@ -137,7 +139,7 @@ export class RecipeForm implements OnInit, OnChanges {
       id: null,
       name: '',
       image: '',
-      cuisines: '',
+      cuisine: '',
       difficulty: '',
       prepTimeMinutes: null,
       cookTimeMinutes: null,
