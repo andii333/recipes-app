@@ -4,6 +4,7 @@ import {
   EventEmitter,
   Input,
   OnChanges,
+  OnInit,
   Output,
   inject,
 } from '@angular/core';
@@ -11,7 +12,6 @@ import {
   FormArray,
   FormBuilder,
   FormGroup,
-  FormsModule,
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
@@ -34,70 +34,123 @@ import { RecipesService } from '@services/recipes-service';
     SelectModule,
     InputText,
     InputNumberModule,
-    FormsModule,
     Button,
     ProgressSpinnerModule,
   ],
   templateUrl: './recipe-form.html',
   styleUrl: './recipe-form.scss',
 })
-export class RecipeForm implements OnChanges {
+export class RecipeForm implements OnInit, OnChanges {
+  // Inputs/Outputs
   @Input() recipeId!: number;
   @Output() closeDialog = new EventEmitter<void>();
+
+  // Services
+  private readonly recipesService = inject(RecipesService);
+  private readonly fb = inject(FormBuilder);
+
+  // Form Group
   recipeForm!: FormGroup;
-  private recipesService = inject(RecipesService);
-  private fb = inject(FormBuilder);
+
+  // Signals
   recipeSignal = this.recipesService.activeRecipeSignal;
-  difficulties = [
+
+  // Dropdown options
+  readonly difficulties = [
     { label: 'Easy', value: 'Easy' },
     { label: 'Medium', value: 'Medium' },
     { label: 'Hard', value: 'Hard' },
   ];
+
+  // Temporary input values
   newTag = '';
   newIngredient = '';
   newInstruction = '';
   newMealType = '';
 
-  ngOnChanges(): void {
-    this.recipesService.removeActiveRecipe();
-    if (this.recipeId)
-      this.recipesService
-        .getOneRecipe(this.recipeId)
-        .subscribe((recipe) => this.initialForm(recipe));
+  // Lifecycle management
+  ngOnInit(): void {
+    this.recipeForm = this.createForm();
   }
 
-  initialForm(recipe: IRecipe) {
-    this.recipeForm = this.fb.group({
-      id: [recipe.id],
-      name: [recipe.name, Validators.required],
-      image: [recipe.image, Validators.required],
-      cuisines: [recipe.cuisine, Validators.required],
-      difficulty: [recipe.difficulty, Validators.required],
-      prepTimeMinutes: [recipe.prepTimeMinutes, Validators.required],
-      cookTimeMinutes: [recipe.cookTimeMinutes, Validators.required],
-      servings: [recipe.servings, Validators.required],
-      caloriesPerServing: [recipe.caloriesPerServing, Validators.required],
-      rating: [recipe.rating],
-      reviewCount: [recipe.reviewCount],
-      ingredients: this.fb.array(
-        (recipe.ingredients || []).map((i) =>
-          this.fb.control(i, Validators.required)
-        )
-      ),
-      instructions: this.fb.array(
-        (recipe.instructions || []).map((i) =>
-          this.fb.control(i, Validators.required)
-        )
-      ),
-      tags: this.fb.array(
-        (recipe.tags || []).map((t) => this.fb.control(t, Validators.required))
-      ),
-      mealType: this.fb.array(
-        (recipe.mealType || []).map((t) =>
-          this.fb.control(t, Validators.required)
-        )
-      ),
+  ngOnChanges(): void {
+    if (this.recipeId) {
+      this.recipesService
+        .getOneRecipe(this.recipeId)
+        .subscribe((recipe) => this.populateForm(recipe));
+    } else {
+      this.resetForm();
+    }
+  }
+
+  private createForm(): FormGroup {
+    return this.fb.group({
+      id: [null],
+      name: ['', Validators.required],
+      image: ['', Validators.required],
+      cuisine: ['', Validators.required],
+      difficulty: ['', Validators.required],
+      prepTimeMinutes: [null, Validators.required],
+      cookTimeMinutes: [null, Validators.required],
+      servings: [null, Validators.required],
+      caloriesPerServing: [null, Validators.required],
+      rating: [null],
+      reviewCount: [null],
+      ingredients: this.fb.array([]),
+      instructions: this.fb.array([]),
+      tags: this.fb.array([]),
+      mealType: this.fb.array([]),
     });
+  }
+
+  private populateForm(recipe: IRecipe): void {
+    this.recipeForm.patchValue({
+      id: recipe.id,
+      name: recipe.name,
+      image: recipe.image,
+      cuisine: recipe.cuisine,
+      difficulty: recipe.difficulty,
+      prepTimeMinutes: recipe.prepTimeMinutes,
+      cookTimeMinutes: recipe.cookTimeMinutes,
+      servings: recipe.servings,
+      caloriesPerServing: recipe.caloriesPerServing,
+      rating: recipe.rating,
+      reviewCount: recipe.reviewCount,
+    });
+
+    this.populateFormArray(this.ingredients, recipe.ingredients || []);
+    this.populateFormArray(this.instructions, recipe.instructions || []);
+    this.populateFormArray(this.tags, recipe.tags || []);
+    this.populateFormArray(this.mealType, recipe.mealType || []);
+  }
+
+  private populateFormArray(formArray: FormArray, items: string[]): void {
+    formArray.clear();
+
+    items.forEach((item) => {
+      formArray.push(this.fb.control(item, Validators.required));
+    });
+  }
+
+  private resetForm(): void {
+    this.recipeForm.reset({
+      id: null,
+      name: '',
+      image: '',
+      cuisines: '',
+      difficulty: '',
+      prepTimeMinutes: null,
+      cookTimeMinutes: null,
+      servings: null,
+      caloriesPerServing: null,
+      rating: null,
+      reviewCount: null,
+    });
+
+    this.ingredients.clear();
+    this.instructions.clear();
+    this.tags.clear();
+    this.mealType.clear();
   }
 
   get tags(): FormArray {
@@ -116,59 +169,69 @@ export class RecipeForm implements OnChanges {
     return this.recipeForm.get('instructions') as FormArray;
   }
 
-  addIngredient() {
-    const value = this.newIngredient.trim();
-    if (value) {
-      this.ingredients.push(this.fb.control(value, Validators.required));
+  private addArrayItem(
+    array: FormArray,
+    value: string,
+    clearInput: () => void
+  ): void {
+    const trimmedValue = value.trim();
+    if (trimmedValue) {
+      array.push(this.fb.control(trimmedValue, Validators.required));
+      clearInput();
+    }
+  }
+
+  private removeArrayItem(array: FormArray, index: number): void {
+    array.removeAt(index);
+  }
+
+  addIngredient(): void {
+    this.addArrayItem(this.ingredients, this.newIngredient, () => {
       this.newIngredient = '';
-    }
+    });
   }
 
-  removeIngredient(index: number) {
-    this.ingredients.removeAt(index);
+  removeIngredient(index: number): void {
+    this.removeArrayItem(this.ingredients, index);
   }
 
-  addInstruction() {
-    const value = this.newInstruction.trim();
-    if (value) {
-      this.instructions.push(this.fb.control(value, Validators.required));
+  addInstruction(): void {
+    this.addArrayItem(this.instructions, this.newInstruction, () => {
       this.newInstruction = '';
-    }
+    });
   }
 
-  removeInstruction(index: number) {
-    this.instructions.removeAt(index);
+  removeInstruction(index: number): void {
+    this.removeArrayItem(this.instructions, index);
   }
 
-  addTag() {
-    const value = this.newTag.trim();
-    if (value) {
-      this.tags.push(this.fb.control(value, Validators.required));
+  addTag(): void {
+    this.addArrayItem(this.tags, this.newTag, () => {
       this.newTag = '';
-    }
+    });
   }
 
-  removeTag(index: number) {
-    this.tags.removeAt(index);
+  removeTag(index: number): void {
+    this.removeArrayItem(this.tags, index);
   }
 
-  addMealType() {
-    const value = this.newMealType.trim();
-    if (value) {
-      this.mealType.push(this.fb.control(value, Validators.required));
+  addMealType(): void {
+    this.addArrayItem(this.mealType, this.newMealType, () => {
       this.newMealType = '';
-    }
+    });
   }
 
-  removeMealType(index: number) {
-    this.mealType.removeAt(index);
+  removeMealType(index: number): void {
+    this.removeArrayItem(this.mealType, index);
   }
 
-  saveRecipe() {
+  saveRecipe(): void {
     if (this.recipeForm.valid) {
       this.recipesService.updateRecipeInSignal(this.recipeForm.value);
       this.recipesService.updateActiveRecipe(this.recipeForm.value);
       this.closeDialog.emit();
+    } else {
+      this.recipeForm.markAllAsTouched();
     }
   }
 }
